@@ -18,6 +18,7 @@ deliverables/
 build/
 dist/
 
-# OS X
+# VI
 
-.DS_Store
+tags
+

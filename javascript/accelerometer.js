@@ -43,7 +43,7 @@ var Acceleration = function(x, y, z) {
          * List of accelerometer watch timers
          */
         this.timers = {};
-    };
+    }
 
     /**
      * Asynchronously acquires the current acceleration.
@@ -79,7 +79,7 @@ var Acceleration = function(x, y, z) {
      */
     Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallback, options) {
         // Default interval (10 sec)
-        var frequency = (options != undefined)? options.frequency : 10000;
+        var frequency = options ? options.frequency : 10000;
 
         // successCallback required
         if (typeof successCallback != "function") {
@@ -118,7 +118,7 @@ var Acceleration = function(x, y, z) {
      */
     Accelerometer.prototype.clearWatch = function(id) {
         // Stop timer & remove from timer list
-        if (id && navigator.accelerometer.timers[id] != undefined) {
+        if (id && navigator.accelerometer.timers[id]) {
             clearInterval(navigator.accelerometer.timers[id]);
             delete navigator.accelerometer.timers[id];
         }

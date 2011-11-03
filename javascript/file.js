@@ -12,7 +12,7 @@
  */
 function FileError() {
     this.code = null;
-};
+}
 
 // File error codes
 // Found in DOMException
@@ -36,7 +36,7 @@ FileError.PATH_EXISTS_ERR = 12;
  * 
  * Provides file utility methods.
  */
-(function() {
+(function () {
     /**
      * Check that navigator.fileMgr has not been initialized.
      */
@@ -48,7 +48,7 @@ FileError.PATH_EXISTS_ERR = 12;
      * @constructor
      */
     function FileMgr() {
-    };
+    }
 
     /**
      * Returns the available memory in bytes for the root file system of the
@@ -56,7 +56,7 @@ FileError.PATH_EXISTS_ERR = 12;
      * 
      * @param filePath A file system path
      */
-    FileMgr.prototype.getFreeDiskSpace = function(filePath) {
+    FileMgr.prototype.getFreeDiskSpace = function (filePath) {
         return blackberry.io.dir.getFreeSpaceForRoot(filePath);
     };
 
@@ -65,7 +65,7 @@ FileError.PATH_EXISTS_ERR = 12;
      * 
      * @param fullPath             The full path of the file 
      */
-    FileMgr.prototype.testFileExists = function(fullPath) {
+    FileMgr.prototype.testFileExists = function (fullPath) {
         return blackberry.io.file.exists(fullPath);
     };
 
@@ -74,7 +74,7 @@ FileError.PATH_EXISTS_ERR = 12;
      * 
      * @param fullPath             The full path of the directory
      */
-    FileMgr.prototype.testDirectoryExists = function(fullPath) {
+    FileMgr.prototype.testDirectoryExists = function (fullPath) {
         return blackberry.io.dir.exists(fullPath);
     };
 
@@ -87,7 +87,7 @@ FileError.PATH_EXISTS_ERR = 12;
      * @param successCallback   Callback invoked with file contents
      * @param errorCallback     Callback invoked on error
      */
-    FileMgr.prototype.readAsText = function(fileName, encoding, successCallback, errorCallback) {
+    FileMgr.prototype.readAsText = function (fileName, encoding, successCallback, errorCallback) {
         PhoneGap.exec(successCallback, errorCallback, "File", "readAsText", [fileName, encoding]);
     };
 
@@ -98,7 +98,7 @@ FileError.PATH_EXISTS_ERR = 12;
      * @param successCallback   Callback invoked with file contents
      * @param errorCallback     Callback invoked on error
      */
-    FileMgr.prototype.readAsDataURL = function(fileName, successCallback, errorCallback) {
+    FileMgr.prototype.readAsDataURL = function (fileName, successCallback, errorCallback) {
         PhoneGap.exec(successCallback, errorCallback, "File", "readAsDataURL", [fileName]);
     };
 
@@ -111,7 +111,7 @@ FileError.PATH_EXISTS_ERR = 12;
      * @param successCallback   Callback invoked after successful write operation
      * @param errorCallback     Callback invoked on error
      */
-    FileMgr.prototype.write = function(fileName, data, position, successCallback, errorCallback) {
+    FileMgr.prototype.write = function (fileName, data, position, successCallback, errorCallback) {
         PhoneGap.exec(successCallback, errorCallback, "File", "write", [fileName, data, position]);
     };
 
@@ -123,14 +123,14 @@ FileError.PATH_EXISTS_ERR = 12;
      * @param successCallback   Callback invoked after successful write operation
      * @param errorCallback     Callback invoked on error
      */
-    FileMgr.prototype.truncate = function(fileName, size, successCallback, errorCallback) {
+    FileMgr.prototype.truncate = function (fileName, size, successCallback, errorCallback) {
         PhoneGap.exec(successCallback, errorCallback, "File", "truncate", [fileName, size]);
     };
 
     /**
      * Define navigator.fileMgr object.
      */
-    PhoneGap.addConstructor(function() {
+    PhoneGap.addConstructor(function () {
         navigator.fileMgr = new FileMgr();
     });
 }());
@@ -140,7 +140,7 @@ FileError.PATH_EXISTS_ERR = 12;
  * 
  * Reads files from the device file system.
  */
-var FileReader = FileReader || (function() {
+var FileReader = FileReader || (function () {
     /**
      * @constructor
      */
@@ -162,7 +162,7 @@ var FileReader = FileReader || (function() {
         this.onerror = null;        // When the read has failed (see errors).
         this.onloadend = null;      // When the request has completed (either in success or failure).
         this.onabort = null;        // When the read has been aborted. For instance, by invoking the abort() method.
-    };
+    }
     
     /**
      * States
@@ -174,29 +174,29 @@ var FileReader = FileReader || (function() {
     /**
      * Abort read file operation.
      */
-    FileReader.prototype.abort = function() {
-        var event;
+    FileReader.prototype.abort = function () {
+        var event,
+            error = new FileError();
         
         // reset everything
         this.readyState = FileReader.DONE;
         this.result = null;
         
         // set error
-        var error = new FileError();
         error.code = error.ABORT_ERR;
         this.error = error;
 
         // abort procedure
-        if (typeof this.onerror == "function") {
-            event = {"type":"error", "target":this};
+        if (typeof this.onerror === "function") {
+            event = {"type": "error", "target": this};
             this.onerror(event);
         }
-        if (typeof this.onabort == "function") {
-            event = {"type":"abort", "target":this};
+        if (typeof this.onabort === "function") {
+            event = {"type": "abort", "target": this};
             this.onabort(event);
         }
-        if (typeof this.onloadend == "function") {
-            event = {"type":"loadend", "target":this};
+        if (typeof this.onloadend === "function") {
+            event = {"type": "loadend", "target": this};
             this.onloadend(event);
         }
     };
@@ -207,26 +207,26 @@ var FileReader = FileReader || (function() {
      * @param file          {File} File object containing file properties
      * @param encoding      [Optional] (see http://www.iana.org/assignments/character-sets)
      */
-    FileReader.prototype.readAsText = function(file, encoding) {
-        var event;
+    FileReader.prototype.readAsText = function (file, encoding) {
         
         // Use UTF-8 as default encoding
-        var enc = encoding ? encoding : "UTF-8";
+        var enc = encoding ? encoding : "UTF-8",
+            event,
+            me = this;
         
         // start
         this.readyState = FileReader.LOADING;
-        if (typeof this.onloadstart == "function") {
-            event = {"type":"loadstart", "target":this};
+        if (typeof this.onloadstart === "function") {
+            event = {"type": "loadstart", "target": this};
             this.onloadstart(event);
         }
 
         // read and encode file
         this.fileName = file.fullPath;
-        var me = this;
         navigator.fileMgr.readAsText(file.fullPath, enc, 
 
             // success callback
-            function(result) {
+            function (result) {
                 // If DONE (canceled), then don't do anything
                 if (me.readyState === FileReader.DONE) {
                     return;
@@ -234,19 +234,19 @@ var FileReader = FileReader || (function() {
 
                 // success procedure
                 me.result = result;
-                if (typeof me.onload == "function") {
-                    event = {"type":"load", "target":me};
+                if (typeof me.onload === "function") {
+                    event = {"type": "load", "target": me};
                     me.onload(event);
                 }
                 me.readyState = FileReader.DONE;
-                if (typeof me.onloadend == "function") {
-                    event = {"type":"loadend", "target":me};
+                if (typeof me.onloadend === "function") {
+                    event = {"type": "loadend", "target": me};
                     me.onloadend(event);
                 }
             },
 
             // error callback
-            function(error) {
+            function (error) {
                 // If DONE (canceled), then don't do anything
                 if (me.readyState === FileReader.DONE) {
                     return;
@@ -259,13 +259,13 @@ var FileReader = FileReader || (function() {
                 
                 // error procedure
                 me.result = null;
-                if (typeof me.onerror == "function") {
-                    event = {"type":"error", "target":me};
+                if (typeof me.onerror === "function") {
+                    event = {"type": "error", "target": me};
                     me.onerror(event);
                 }
                 me.readyState = FileReader.DONE;
-                if (typeof me.onloadend == "function") {
-                    event = {"type":"loadend", "target":me};
+                if (typeof me.onloadend === "function") {
+                    event = {"type": "loadend", "target": me};
                     me.onloadend(event);
                 }
             }
@@ -279,23 +279,23 @@ var FileReader = FileReader || (function() {
      *
      * @param file          {File} File object containing file properties
      */
-    FileReader.prototype.readAsDataURL = function(file) {
-        var event;
+    FileReader.prototype.readAsDataURL = function (file) {
+        var event,
+            me = this;
         
         // start
         this.readyState = FileReader.LOADING;
-        if (typeof this.onloadstart == "function") {
-            event = {"type":"loadstart", "target":this};
+        if (typeof this.onloadstart === "function") {
+            event = {"type": "loadstart", "target": this};
             this.onloadstart(event);
         }
         
         // read and encode file
         this.fileName = file.fullPath;
-        var me = this;
         navigator.fileMgr.readAsDataURL(file.fullPath, 
 
             // success callback
-            function(result) {
+            function (result) {
                 // If DONE (canceled), then don't do anything
                 if (me.readyState === FileReader.DONE) {
                     return;
@@ -303,19 +303,19 @@ var FileReader = FileReader || (function() {
 
                 // success procedure
                 me.result = result;
-                if (typeof me.onload == "function") {
-                    event = {"type":"load", "target":me};
+                if (typeof me.onload === "function") {
+                    event = {"type": "load", "target": me};
                     me.onload(event);
                 }
                 me.readyState = FileReader.DONE;
-                if (typeof me.onloadend == "function") {
-                    event = {"type":"loadend", "target":me};
+                if (typeof me.onloadend === "function") {
+                    event = {"type": "loadend", "target": me};
                     me.onloadend(event);
                 }
             },
 
             // error callback
-            function(error) {
+            function (error) {
                 // If DONE (canceled), then don't do anything
                 if (me.readyState === FileReader.DONE) {
                     return;
@@ -328,13 +328,13 @@ var FileReader = FileReader || (function() {
                 
                 // error procedure
                 me.result = null;
-                if (typeof me.onerror == "function") {
-                    event = {"type":"error", "target":me};
+                if (typeof me.onerror === "function") {
+                    event = {"type": "error", "target": me};
                     me.onerror(event);
                 }
                 me.readyState = FileReader.DONE;
-                if (typeof me.onloadend == "function") {
-                    event = {"type":"loadend", "target":me};
+                if (typeof me.onloadend === "function") {
+                    event = {"type": "loadend", "target": me};
                     me.onloadend(event);
                 }
             }
@@ -346,7 +346,7 @@ var FileReader = FileReader || (function() {
      *
      * @param file          {File} File object containing file properties
      */
-    FileReader.prototype.readAsBinaryString = function(file) {
+    FileReader.prototype.readAsBinaryString = function (file) {
         // TODO - Can't return binary data to browser.
         if (typeof file.fullPath === "undefined") {
             this.fileName = file;
@@ -360,7 +360,7 @@ var FileReader = FileReader || (function() {
      *
      * @param file          {File} File object containing file properties
      */
-    FileReader.prototype.readAsArrayBuffer = function(file) {
+    FileReader.prototype.readAsArrayBuffer = function (file) {
         // TODO - Can't return binary data to browser.
         if (typeof file.fullPath === "undefined") {
             this.fileName = file;
@@ -377,7 +377,7 @@ var FileReader = FileReader || (function() {
  * 
  * Writes files to the device file system.
  */
-var FileWriter = FileWriter || (function() {
+var FileWriter = FileWriter || (function () {
     /**
      * @constructor
      * @param file {File} a File object representing a file on the file system
@@ -401,7 +401,7 @@ var FileWriter = FileWriter || (function() {
         this.onwriteend = null;     // When the request has completed (either in success or failure).
         this.onabort = null;        // When the write has been aborted. For instance, by invoking the abort() method.
         this.onerror = null;        // When the write has failed (see errors).
-    };
+    }
 
     /**
      * States
@@ -413,8 +413,9 @@ var FileWriter = FileWriter || (function() {
     /**
      * Abort writing file.
      */
-    FileWriter.prototype.abort = function() {
-        var event;
+    FileWriter.prototype.abort = function () {
+        var event,
+            error = new FileError();
 
         // check for invalid state 
         if (this.readyState === FileWriter.DONE || this.readyState === FileWriter.INIT) {
@@ -422,17 +423,16 @@ var FileWriter = FileWriter || (function() {
         }
         
         // set error
-        var error = new FileError();
         error.code = error.ABORT_ERR;
         this.error = error;
 
         // dispatch progress events
-        if (typeof this.onerror == "function") {
-            event = {"type":"error", "target":this};
+        if (typeof this.onerror === "function") {
+            event = {"type": "error", "target": this};
             this.onerror(event);
         }
-        if (typeof this.onabort == "function") {
-            event = {"type":"abort", "target":this};
+        if (typeof this.onabort === "function") {
+            event = {"type": "abort", "target": this};
             this.onabort(event);
         }
 
@@ -440,8 +440,8 @@ var FileWriter = FileWriter || (function() {
         this.readyState = FileWriter.DONE;
         
         // done
-        if (typeof this.writeend == "function") {
-            event = {"type":"writeend", "target":this};
+        if (typeof this.writeend === "function") {
+            event = {"type": "writeend", "target": this};
             this.writeend(event);
         }
     };    
@@ -451,7 +451,7 @@ var FileWriter = FileWriter || (function() {
      * 
      * @param offset    Absolute byte offset into the file
      */
-    FileWriter.prototype.seek = function(offset) {
+    FileWriter.prototype.seek = function (offset) {
         // Throw an exception if we are already writing a file
         if (this.readyState === FileWriter.WRITING) {
             throw FileError.INVALID_STATE_ERR;
@@ -480,8 +480,9 @@ var FileWriter = FileWriter || (function() {
      * 
      * @param size      The size to which the file length is to be adjusted
      */
-    FileWriter.prototype.truncate = function(size) {
-        var event;
+    FileWriter.prototype.truncate = function (size) {
+        var event,
+            me = this;
         
         // Throw an exception if we are already writing a file
         if (this.readyState === FileWriter.WRITING) {
@@ -490,16 +491,15 @@ var FileWriter = FileWriter || (function() {
         
         // start
         this.readyState = FileWriter.WRITING;
-        if (typeof this.onwritestart == "function") {
-            event = {"type":"writestart", "target":this};
+        if (typeof this.onwritestart === "function") {
+            event = {"type": "writestart", "target": this};
             this.onwritestart(event);
         }
 
         // truncate file
-        var me = this;
         navigator.fileMgr.truncate(this.fileName, size, 
             // Success callback receives the new file size
-            function(result) {
+            function (result) {
                 // If DONE (canceled), then don't do anything
                 if (me.readyState === FileWriter.DONE) {
                     return;
@@ -511,19 +511,19 @@ var FileWriter = FileWriter || (function() {
                 me.position = Math.min(me.position, result);
 
                 // success procedure
-                if (typeof me.onwrite == "function") {
-                    event = {"type":"write", "target":me};
+                if (typeof me.onwrite === "function") {
+                    event = {"type": "write", "target": me};
                     me.onwrite(event);
                 }
                 me.readyState = FileWriter.DONE;
-                if (typeof me.onwriteend == "function") {
-                    event = {"type":"writeend", "target":me};
+                if (typeof me.onwriteend === "function") {
+                    event = {"type": "writeend", "target": me};
                     me.onwriteend(event);
                 }
             },
 
             // Error callback
-            function(error) {
+            function (error) {
                 // If DONE (canceled), then don't do anything
                 if (me.readyState === FileWriter.DONE) {
                     return;
@@ -535,13 +535,13 @@ var FileWriter = FileWriter || (function() {
                 me.error = err;
 
                 // error procedure
-                if (typeof me.onerror == "function") {
-                    event = {"type":"error", "target":me};
+                if (typeof me.onerror === "function") {
+                    event = {"type": "error", "target": me};
                     me.onerror(event);
                 }
                 me.readyState = FileWriter.DONE;
-                if (typeof me.onwriteend == "function") {
-                    event = {"type":"writeend", "target":me};
+                if (typeof me.onwriteend === "function") {
+                    event = {"type": "writeend", "target": me};
                     me.onwriteend(event);
                 }
             }            
@@ -553,8 +553,9 @@ var FileWriter = FileWriter || (function() {
      * 
      * @param data      contents to be written
      */
-    FileWriter.prototype.write = function(data) {
-        var event;
+    FileWriter.prototype.write = function (data) {
+        var event,
+            me = this;
         
         // Throw an exception if we are already writing a file
         if (this.readyState === FileWriter.WRITING) {
@@ -563,17 +564,16 @@ var FileWriter = FileWriter || (function() {
 
         // WRITING state
         this.readyState = FileWriter.WRITING;
-        if (typeof this.onwritestart == "function") {
-            event = {"type":"writestart", "target":this};
+        if (typeof this.onwritestart === "function") {
+            event = {"type": "writestart", "target": this};
             this.onwritestart(event);
         }
 
         // Write file
-        var me = this;
         navigator.fileMgr.write(this.fileName, data, this.position,
 
             // Success callback receives bytes written
-            function(result) {
+            function (result) {
                 // If DONE (canceled), then don't do anything
                 if (me.readyState === FileWriter.DONE) {
                     return;
@@ -586,19 +586,19 @@ var FileWriter = FileWriter || (function() {
                 me.length = me.position;
 
                 // success procedure
-                if (typeof me.onwrite == "function") {
-                    event = {"type":"write", "target":me};
+                if (typeof me.onwrite === "function") {
+                    event = {"type": "write", "target": me};
                     me.onwrite(event);
                 }
                 me.readyState = FileWriter.DONE;
-                if (typeof me.onwriteend == "function") {
-                    event = {"type":"writeend", "target":me};
+                if (typeof me.onwriteend === "function") {
+                    event = {"type": "writeend", "target": me};
                     me.onwriteend(event);
                 }
             },
 
             // Error callback
-            function(error) {
+            function (error) {
                 // If DONE (canceled), then don't do anything
                 if (me.readyState === FileWriter.DONE) {
                     return;
@@ -610,13 +610,13 @@ var FileWriter = FileWriter || (function() {
                 me.error = err;
 
                 // error procedure
-                if (typeof me.onerror == "function") {
-                    event = {"type":"error", "target":me};
+                if (typeof me.onerror === "function") {
+                    event = {"type": "error", "target": me};
                     me.onerror(event);
                 }
                 me.readyState = FileWriter.DONE;
-                if (typeof me.onwriteend == "function") {
-                    event = {"type":"writeend", "target":me};
+                if (typeof me.onwriteend === "function") {
+                    event = {"type": "writeend", "target": me};
                     me.onwriteend(event);
                 }
             }
@@ -629,7 +629,7 @@ var FileWriter = FileWriter || (function() {
 /**
  * Represents a file or directory on the local file system.
  */
-var Entry = Entry || (function() {
+var Entry = Entry || (function () {
     /**
      * Represents a file or directory on the local file system.
      * 
@@ -653,7 +653,7 @@ var Entry = Entry || (function() {
         this.isDirectory = (entry && entry.isDirectory === true) ? true : false;
         this.name = (entry && entry.name) || "";
         this.fullPath = (entry && entry.fullPath) || "";            
-    };
+    }
 
     /**
      * Look up the metadata of the entry.
@@ -663,15 +663,15 @@ var Entry = Entry || (function() {
      * @param errorCallback
      *            {Function} is called with a FileError
      */
-    Entry.prototype.getMetadata = function(successCallback, errorCallback) {
-        var success = function(lastModified) {
+    Entry.prototype.getMetadata = function (successCallback, errorCallback) {
+        var success = function (lastModified) {
                 var metadata = new Metadata();
                 metadata.modificationTime = new Date(lastModified);
                 if (typeof successCallback === "function") {
                     successCallback(metadata);
                 }
             },
-            fail = function(error) {
+            fail = function (error) {
                 LocalFileSystem.onError(error, errorCallback);
             };
             
@@ -690,14 +690,17 @@ var Entry = Entry || (function() {
      * @param errorCallback
      *            {Function} called with a FileError
      */
-    Entry.prototype.moveTo = function(parent, newName, successCallback, errorCallback) {
+    Entry.prototype.moveTo = function (parent, newName, successCallback, errorCallback) {
         // source path
         var srcPath = this.fullPath,
             // entry name
             name = newName || this.name,
             // destination path
             dstPath,
-            success = function(entry) {
+            fail = function (error) {
+                LocalFileSystem.onError(error, errorCallback);
+            },
+            success = function (entry) {
                 var result; 
 
                 if (entry) {
@@ -714,9 +717,6 @@ var Entry = Entry || (function() {
                     // no Entry object returned
                     fail(FileError.NOT_FOUND_ERR);
                 }
-            },
-            fail = function(error) {
-                LocalFileSystem.onError(error, errorCallback);
             };
 
         // user must specify parent Entry
@@ -741,13 +741,16 @@ var Entry = Entry || (function() {
      * @param errorCallback
      *            {Function} called with a FileError
      */
-    Entry.prototype.copyTo = function(parent, newName, successCallback, errorCallback) {
+    Entry.prototype.copyTo = function (parent, newName, successCallback, errorCallback) {
             // source path
         var srcPath = this.fullPath,
             // entry name
             name = newName || this.name,
+            fail = function (error) {
+                LocalFileSystem.onError(error, errorCallback);
+            },
             // success callback
-            success = function(entry) {
+            success = function (entry) {
                 var result; 
 
                 if (entry) {
@@ -764,9 +767,6 @@ var Entry = Entry || (function() {
                     // no Entry object returned
                     fail(FileError.NOT_FOUND_ERR);
                 }
-            },
-            fail = function(error) {
-                LocalFileSystem.onError(error, errorCallback);
             };
 
         // user must specify parent Entry
@@ -790,7 +790,7 @@ var Entry = Entry || (function() {
      * @param errorCallback
      *            {Function} called with a FileError
      */
-    Entry.prototype.toURI = function(mimeType, successCallback, errorCallback) {
+    Entry.prototype.toURI = function (mimeType, successCallback, errorCallback) {
         // fullPath attribute contains the full URI on BlackBerry
         return this.fullPath;
     };    
@@ -803,7 +803,7 @@ var Entry = Entry || (function() {
      * @param successCallback {Function} called with no parameters
      * @param errorCallback {Function} called with a FileError
      */
-    Entry.prototype.remove = function(successCallback, errorCallback) {
+    Entry.prototype.remove = function (successCallback, errorCallback) {
         var path = this.fullPath,
             // directory contents
             contents = [];
@@ -860,7 +860,7 @@ var Entry = Entry || (function() {
      * @param successCallback {Function} called with the parent DirectoryEntry object
      * @param errorCallback {Function} called with a FileError
      */
-    Entry.prototype.getParent = function(successCallback, errorCallback) {
+    Entry.prototype.getParent = function (successCallback, errorCallback) {
         var that = this;
         
         try {
@@ -871,7 +871,7 @@ var Entry = Entry || (function() {
             // (directory).  If it is, we must return this Entry, rather than
             // the Entry for its parent.
             window.requestFileSystem(LocalFileSystem.TEMPORARY, 0,
-                    function(fileSystem) {                        
+                    function (fileSystem) {                        
                         if (fileSystem.root.fullPath === that.fullPath) {
                             successCallback(fileSystem.root);
                         }
@@ -898,13 +898,13 @@ var Entry = Entry || (function() {
 /**
  * Represents a directory on the local file system.
  */
-var DirectoryEntry = DirectoryEntry || (function() {
+var DirectoryEntry = DirectoryEntry || (function () {
     /**
      * Represents a directory on the local file system.
      */
     function DirectoryEntry(entry) {
         DirectoryEntry.__super__.constructor.apply(this, arguments);
-    };
+    }
     
     // extend Entry
     PhoneGap.extend(DirectoryEntry, Entry);
@@ -922,7 +922,7 @@ var DirectoryEntry = DirectoryEntry || (function() {
      * @param errorCallback {Function}
      *            called with a FileError object if error occurs
      */
-    DirectoryEntry.prototype.getFile = function(path, options, successCallback, errorCallback) {
+    DirectoryEntry.prototype.getFile = function (path, options, successCallback, errorCallback) {
             // create file if it doesn't exist
         var create = (options && options.create === true) ? true : false,
             // if true, causes failure if create is true and path already exists
@@ -930,7 +930,7 @@ var DirectoryEntry = DirectoryEntry || (function() {
             // file exists
             exists,
             // create a new FileEntry object and invoke success callback
-            createEntry = function() {
+            createEntry = function () {
                 var path_parts = path.split('/'),
                     name = path_parts[path_parts.length - 1],
                     fileEntry = new FileEntry({name: name, 
@@ -984,11 +984,11 @@ var DirectoryEntry = DirectoryEntry || (function() {
         else if (create) {
             // create empty file
             navigator.fileMgr.write(path, "", 0,
-                function(result) {
+                function (result) {
                     // file created
                     createEntry();
                 },
-                function(error) {
+                function (error) {
                     // unable to create file
                     LocalFileSystem.onError(error, errorCallback);
                 });
@@ -1014,7 +1014,7 @@ var DirectoryEntry = DirectoryEntry || (function() {
      * @param errorCallback
      *            {Function} called with a FileError
      */
-    DirectoryEntry.prototype.getDirectory = function(path, options, successCallback, errorCallback) {
+    DirectoryEntry.prototype.getDirectory = function (path, options, successCallback, errorCallback) {
             // create directory if it doesn't exist
         var create = (options && options.create === true) ? true : false,
             // if true, causes failure if create is true and path already exists
@@ -1022,7 +1022,7 @@ var DirectoryEntry = DirectoryEntry || (function() {
             // directory exists
             exists,
             // create a new DirectoryEntry object and invoke success callback
-            createEntry = function() {
+            createEntry = function () {
                 var path_parts = path.split('/'),
                     name = path_parts[path_parts.length - 1],
                     dirEntry = new DirectoryEntry({name: name, 
@@ -1101,7 +1101,7 @@ var DirectoryEntry = DirectoryEntry || (function() {
      * @param successCallback {Function} called with no parameters
      * @param errorCallback {Function} called with a FileError
      */
-    DirectoryEntry.prototype.removeRecursively = function(successCallback, errorCallback) {
+    DirectoryEntry.prototype.removeRecursively = function (successCallback, errorCallback) {
         // we're removing THIS directory
         var path = this.fullPath;
             
@@ -1145,7 +1145,7 @@ var DirectoryEntry = DirectoryEntry || (function() {
     /**
      * Creates a new DirectoryReader to read entries from this directory
      */
-    DirectoryEntry.prototype.createReader = function() {
+    DirectoryEntry.prototype.createReader = function () {
         return new DirectoryReader(this.fullPath);
     };
     
@@ -1154,10 +1154,10 @@ var DirectoryEntry = DirectoryEntry || (function() {
      * @param successCallback {Function} called with a list of entries
      * @param errorCallback {Function} called with a FileError
      */
-    DirectoryReader.prototype.readEntries = function(successCallback, errorCallback) {
+    DirectoryReader.prototype.readEntries = function (successCallback, errorCallback) {
         var path = this.path,    
             // process directory contents
-            createEntries = function(array) {
+            createEntries = function (array) {
                 var entries, entry, num_entries, i, name, result = [];
                 
                 // get objects from JSONArray
@@ -1224,7 +1224,7 @@ var DirectoryEntry = DirectoryEntry || (function() {
 /**
  * Represents a file on the local file system.
  */
-var FileEntry = FileEntry || (function() {
+var FileEntry = FileEntry || (function () {
     /**
      * Represents a file on the local file system.
      */
@@ -1244,11 +1244,11 @@ var FileEntry = FileEntry || (function() {
      * @param errorCallback
      *            {Function} called with a FileError
      */
-    FileEntry.prototype.createWriter = function(successCallback, errorCallback) {
+    FileEntry.prototype.createWriter = function (successCallback, errorCallback) {
         var writer;
 
         // create a FileWriter using a File object for this entry
-        this.file(function(file) {
+        this.file(function (file) {
             try {
                 writer = new FileWriter(file);
                 successCallback(writer);
@@ -1268,7 +1268,7 @@ var FileEntry = FileEntry || (function() {
      * @param errorCallback
      *            {Function} called with a FileError
      */
-    FileEntry.prototype.file = function(successCallback, errorCallback) {
+    FileEntry.prototype.file = function (successCallback, errorCallback) {
         var properties, file;
 
         // check that file still exists
@@ -1339,7 +1339,7 @@ function Flags(create, exclusive) {
 /**
  * Contains properties of a file on the file system.
  */
-var File = (function() {
+var File = (function () {
     /**
      * Constructor.
      * name {DOMString} name of the file, without path information
@@ -1362,7 +1362,7 @@ var File = (function() {
 /**
  * Represents a local file system.
  */
-var LocalFileSystem = LocalFileSystem || (function() {
+var LocalFileSystem = LocalFileSystem || (function () {
     
     /**
      * Define file system types.
@@ -1377,7 +1377,7 @@ var LocalFileSystem = LocalFileSystem || (function() {
      * @param error FileError code
      * @param errorCallback error callback to invoke
      */
-    LocalFileSystem.onError = function(error, errorCallback) {
+    LocalFileSystem.onError = function (error, errorCallback) {
         var err = new FileError();
         err.code = error;
         try {
@@ -1393,7 +1393,7 @@ var LocalFileSystem = LocalFileSystem || (function() {
      * system path.
      * @param path fully qualified path
      */
-    LocalFileSystem.isFileSystemRoot = function(path) {
+    LocalFileSystem.isFileSystemRoot = function (path) {
         return PhoneGap.exec(null, null, "File", "isFileSystemRoot", [path]);
     };
     
@@ -1404,11 +1404,13 @@ var LocalFileSystem = LocalFileSystem || (function() {
      * @param successCallback  invoked with a FileSystem object
      * @param errorCallback  invoked if error occurs retrieving file system
      */
-    var _requestFileSystem = function(type, size, successCallback, errorCallback) {
+    var _requestFileSystem = function (type, size, successCallback, errorCallback) {
+        var fail = function (error) {
+                LocalFileSystem.onError(error, errorCallback);
+            },
             // if successful, return a FileSystem object
-        var success = function(file_system) {
-            var result;
-
+            success = function (file_system) {
+                var result;
                 if (file_system) {
                     // grab the name from the file system object
                     result = {
@@ -1428,10 +1430,6 @@ var LocalFileSystem = LocalFileSystem || (function() {
                     // no FileSystem object returned
                     fail(FileError.NOT_FOUND_ERR);
                 }
-            },
-            // error callback
-            fail = function(error) {
-                LocalFileSystem.onError(error, errorCallback);
             };
             
         PhoneGap.exec(success, fail, "File", "requestFileSystem", [type, size]);
@@ -1443,9 +1441,9 @@ var LocalFileSystem = LocalFileSystem || (function() {
      * @param successCallback  invoked with Entry object corresponding to URI
      * @param errorCallback    invoked if error occurs retrieving file system entry
      */
-    var _resolveLocalFileSystemURI = function(uri, successCallback, errorCallback) {
+    var _resolveLocalFileSystemURI = function (uri, successCallback, errorCallback) {
         // if successful, return either a file or directory entry
-        var success = function(entry) {
+        var success = function (entry) {
             var result; 
 
             if (entry) {
@@ -1465,7 +1463,7 @@ var LocalFileSystem = LocalFileSystem || (function() {
         };
 
         // error callback
-        var fail = function(error) {
+        var fail = function (error) {
             LocalFileSystem.onError(error, errorCallback);
         };
         PhoneGap.exec(success, fail, "File", "resolveLocalFileSystemURI", [uri]);
@@ -1474,7 +1472,7 @@ var LocalFileSystem = LocalFileSystem || (function() {
     /**
      * Add the FileSystem interface into the browser.
      */
-    PhoneGap.addConstructor(function() {
+    PhoneGap.addConstructor(function () {
         if(typeof window.requestFileSystem === "undefined") {
             window.requestFileSystem  = _requestFileSystem;
         }

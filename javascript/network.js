@@ -79,8 +79,8 @@ Connection = {
      * Define navigator.network and navigator.network.connection objects
      */
     PhoneGap.addConstructor(function() {
-        navigator.network = new Object();
-
-        navigator.network.connection = new NetworkConnection();
+        navigator.network = {
+            connection: new NetworkConnection();
+        };
     });
 }());

@@ -95,10 +95,10 @@ var ContactOrganization = function(pref, type, name, dept, title) {
  */
 var Contact = Contact || (function() {
     /**
-     * Contains information about a single contact.  
+     * Contains information about a single contact.
      * @param {DOMString} id unique identifier
      * @param {DOMString} displayName
-     * @param {ContactName} name 
+     * @param {ContactName} name
      * @param {DOMString} nickname
      * @param {ContactField[]} phoneNumbers array of phone numbers
      * @param {ContactField[]} emails array of email addresses
@@ -108,7 +108,7 @@ var Contact = Contact || (function() {
      * @param {Date} birthday contact's birthday
      * @param {DOMString} note user notes about contact
      * @param {ContactField[]} photos
-     * @param {DOMString[]} categories 
+     * @param {DOMString[]} categories
      * @param {ContactField[]} urls contact's web sites
      */
     function Contact(id, displayName, name, nickname, phoneNumbers, emails, addresses,
@@ -127,8 +127,8 @@ var Contact = Contact || (function() {
         this.photos = photos || null; // ContactField[]
         this.categories = categories || null; // DOMString[]
         this.urls = urls || null; // ContactField[]
-    };
-    
+    }
+
     /**
      * Persists contact to device storage.
      */
@@ -469,7 +469,7 @@ var Contact = Contact || (function() {
                     bbContact.categories.push(category);
                 }
             }
-        }    
+        }
         
         // save to device
         bbContact.save();

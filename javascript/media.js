@@ -10,7 +10,7 @@
 /**
  * MediaFileData error.
  */
-var MediaFileDataError = function() {
+var MediaFileDataError = function () {
     this.code = 0;
 };
 
@@ -25,7 +25,7 @@ MediaFileDataError.TIMEOUT_ERROR = 1;
  * width {Number The width of the image or video in pixels. In the case of a sound clip, this attribute has value 0.
  * duration {Number} The length of the video or sound clip in seconds. In the case of an image, this attribute has value 0.
  */
-var MediaFileData = function(){
+var MediaFileData = function () {
     this.codecs = null;
     this.bitrate = 0;
     this.height = 0;
@@ -36,13 +36,13 @@ var MediaFileData = function(){
 /**
  * Represents media file properties.
  */
-var MediaFile = MediaFile || (function() {
+var MediaFile = MediaFile || (function () {
     /**
      * Constructor.
      */
     function MediaFile() {
         MediaFile.__super__.constructor.apply(this, arguments);
-    };
+    }
  
     // extend File
     PhoneGap.extend(MediaFile, File);
@@ -50,7 +50,7 @@ var MediaFile = MediaFile || (function() {
     /**
      * Obtains the format data of the media file.
      */
-    MediaFile.prototype.getFormatData = function(successCallback, errorCallback) {
+    MediaFile.prototype.getFormatData = function (successCallback, errorCallback) {
         // there is no API (WebWorks or native) that provides this info
         try {
             successCallback(new MediaFileData());
@@ -66,7 +66,7 @@ var MediaFile = MediaFile || (function() {
 /**
  * Media capture error.
  */
-var CaptureError = function() {
+var CaptureError = function () {
     this.code = 0;
 };
 
@@ -84,7 +84,7 @@ CaptureError.CAPTURE_NOT_SUPPORTED = 20;
 /**
  * Encapsulates a set of parameters that the capture device supports.
  */
-var ConfigurationData = function() {
+var ConfigurationData = function () {
     // The ASCII-encoded string in lower case representing the media type. 
     this.type = null;
     // The height attribute represents height of the image or video in pixels. 
@@ -98,7 +98,7 @@ var ConfigurationData = function() {
 /**
  * Encapsulates all image capture operation configuration options.
  */
-var CaptureImageOptions = function() {
+var CaptureImageOptions = function () {
     // Upper limit of images user can take. Value must be equal or greater than 1.
     this.limit = 1; 
     // The selected image mode. Must match with one of the elements in supportedImageModes array.
@@ -108,7 +108,7 @@ var CaptureImageOptions = function() {
 /**
  * Encapsulates all video capture operation configuration options.
  */
-var CaptureVideoOptions = function() {
+var CaptureVideoOptions = function () {
     // Upper limit of videos user can record. Value must be equal or greater than 1.
     this.limit = 1;
     // Maximum duration of a single video clip in seconds.
@@ -120,7 +120,7 @@ var CaptureVideoOptions = function() {
 /**
  * Encapsulates all audio capture operation configuration options.
  */
-var CaptureAudioOptions = function() {
+var CaptureAudioOptions = function () {
     // Upper limit of sound clips user can record. Value must be equal or greater than 1.
     this.limit = 1;
     // Maximum duration of a single sound clip in seconds.
@@ -132,7 +132,7 @@ var CaptureAudioOptions = function() {
 /**
  * navigator.device.capture 
  */
-(function() {
+(function () {
     /**
      * Check that navigator.device.capture has not been initialized.
      */
@@ -146,48 +146,9 @@ var CaptureAudioOptions = function() {
     var captureId = 'navigator.device.capture';
     
     /**
-     * Media capture object.
-     */
-    function Capture() {
-        var self = this, 
-            // let PhoneGap know we're ready after retrieving all of the 
-            // supported capture modes         
-            addCaptureModes = function(type, modes) {
-                self[type] = modes;
-                if (typeof self.supportedAudioModes !== 'undefined' 
-                    && typeof self.supportedImageModes !== 'undefined'
-                    && typeof self.supportedVideoModes !== 'undefined') {
-                    PhoneGap.initializationComplete(captureId);                    
-                }
-            };
-        
-        // populate supported capture modes
-        PhoneGap.exec(function(modes) {
-            addCaptureModes('supportedAudioModes', parseArray(modes));
-        }, function(error) {
-            console.log('Unable to retrieve supported audio modes: ' + error);
-            addCaptureModes('supportedAudioModes', []);
-        }, 'MediaCapture', 'getSupportedAudioModes', []); 
-        
-        PhoneGap.exec(function(modes) {
-            addCaptureModes('supportedImageModes', parseArray(modes));
-        }, function(error) {
-            console.log('Unable to retrieve supported image modes: ' + error);
-            addCaptureModes('supportedImageModes', []);
-        }, 'MediaCapture', 'getSupportedImageModes', []); 
-        
-        PhoneGap.exec(function(modes) {
-            addCaptureModes('supportedVideoModes', parseArray(modes));
-        }, function(error) {
-            console.log('Unable to retrieve supported video modes: ' + error);
-            addCaptureModes('supportedVideoModes', []);
-        }, 'MediaCapture', 'getSupportedVideoModes', []); 
-    };
-    
-    /**
      * Utility function to parse JSON array.
      */
-    var parseArray = function(array) {
+    function parseArray(array) {
         var result = [];
 
         // get objects from JSONArray
@@ -200,16 +161,58 @@ var CaptureAudioOptions = function() {
         }
         
         return result;
-    };
+    }
+
+    /**
+     * Media capture object.
+     */
+    function Capture() {
+        var self = this, 
+            // let PhoneGap know we're ready after retrieving all of the 
+            // supported capture modes         
+            addCaptureModes = function (type, modes) {
+                self[type] = modes;
+                if (typeof self.supportedAudioModes !== 'undefined' && 
+                    typeof self.supportedImageModes !== 'undefined' && 
+                    typeof self.supportedVideoModes !== 'undefined') {
+                    PhoneGap.initializationComplete(captureId);                    
+                }
+            };
+        
+        // populate supported capture modes
+        PhoneGap.exec(function (modes) {
+            addCaptureModes('supportedAudioModes', parseArray(modes));
+        }, function (error) {
+            console.log('Unable to retrieve supported audio modes: ' + error);
+            addCaptureModes('supportedAudioModes', []);
+        }, 'MediaCapture', 'getSupportedAudioModes', []); 
+        
+        PhoneGap.exec(function (modes) {
+            addCaptureModes('supportedImageModes', parseArray(modes));
+        }, function (error) {
+            console.log('Unable to retrieve supported image modes: ' + error);
+            addCaptureModes('supportedImageModes', []);
+        }, 'MediaCapture', 'getSupportedImageModes', []); 
+        
+        PhoneGap.exec(function (modes) {
+            addCaptureModes('supportedVideoModes', parseArray(modes));
+        }, function (error) {
+            console.log('Unable to retrieve supported video modes: ' + error);
+            addCaptureModes('supportedVideoModes', []);
+        }, 'MediaCapture', 'getSupportedVideoModes', []); 
+    }
+    
     
     /**
      * Utility function to create MediaFile objects from JSON.
      */
-    var getMediaFiles = function(array) {
+    function getMediaFiles(array) {
         var mediaFiles = [], file, objs, obj, len, i, j;
         
         objs = parseArray(array);
-        for (i = 0; len = objs.length, i < len; i += 1) {
+        len = obj.length;
+
+        for (i = 0; i < len; i += 1) {
             obj = objs[i];
             file = new MediaFile();
             for (j in obj) {
@@ -219,7 +222,7 @@ var CaptureAudioOptions = function() {
         }
         
         return mediaFiles;
-    };
+    }
     
     /**
      * Static method for invoking error callbacks.
@@ -227,7 +230,7 @@ var CaptureAudioOptions = function() {
      * @param error         CaptureError code
      * @param errorCallback error callback to invoke
      */
-    Capture.onError = function(error, errorCallback) {
+    Capture.onError = function (error, errorCallback) {
         var err = new CaptureError();
         err.code = error;
         try {
@@ -248,7 +251,7 @@ var CaptureAudioOptions = function() {
      * @param options
      *            {CaptureVideoOptions} options for capturing video
      */
-    Capture.prototype.captureImage = function(successCallback, errorCallback, options) {
+    Capture.prototype.captureImage = function (successCallback, errorCallback, options) {
         var limit = 1,
             mode = null;
 
@@ -261,9 +264,9 @@ var CaptureAudioOptions = function() {
             }
         }
         
-        PhoneGap.exec(function(mediaFiles) {
+        PhoneGap.exec(function (mediaFiles) {
             successCallback(getMediaFiles(mediaFiles));
-        }, function(error) {
+        }, function (error) {
             Capture.onError(error, errorCallback);
         }, 'MediaCapture', 'captureImage', [limit, mode]);         
     };
@@ -280,7 +283,7 @@ var CaptureAudioOptions = function() {
      * @param options
      *            {CaptureVideoOptions} options for capturing video
      */
-    Capture.prototype.captureVideo = function(successCallback, errorCallback, options) { 
+    Capture.prototype.captureVideo = function (successCallback, errorCallback, options) { 
         var limit = 1,
             duration = 0,
             mode = null;
@@ -297,9 +300,9 @@ var CaptureAudioOptions = function() {
             }
         }
         
-        PhoneGap.exec(function(mediaFiles) {
+        PhoneGap.exec(function (mediaFiles) {
             successCallback(getMediaFiles(mediaFiles));
-        }, function(error) {
+        }, function (error) {
             Capture.onError(error, errorCallback);
         }, 'MediaCapture', 'captureVideo', [limit, duration, mode]);         
     };
@@ -316,7 +319,7 @@ var CaptureAudioOptions = function() {
      * @param options
      *            {CaptureAudioOptions} options for capturing audio
      */
-    Capture.prototype.captureAudio = function(successCallback, errorCallback, options) { 
+    Capture.prototype.captureAudio = function (successCallback, errorCallback, options) { 
         var limit = 1, 
             duration = 0,
             mode = null;
@@ -333,9 +336,9 @@ var CaptureAudioOptions = function() {
             }
         }   
         
-        PhoneGap.exec(function(mediaFiles) {
+        PhoneGap.exec(function (mediaFiles) {
             successCallback(getMediaFiles(mediaFiles));
-        }, function(error) {
+        }, function (error) {
             Capture.onError(error, errorCallback);
         }, 'MediaCapture', 'captureAudio', [limit, duration, mode]);         
     };
@@ -343,14 +346,14 @@ var CaptureAudioOptions = function() {
     /**
      * Cancels all pending capture operations.
      */
-    Capture.prototype.cancelCaptures = function() { 
+    Capture.prototype.cancelCaptures = function () { 
         PhoneGap.exec(null, null, 'MediaCapture', 'stopCaptures', []);
     };
     
     /**
      * Define navigator.device.capture object.
      */
-    PhoneGap.addConstructor(function() {
+    PhoneGap.addConstructor(function () {
         PhoneGap.waitForInitialization(captureId);
         navigator.device.capture = new Capture();
     });
